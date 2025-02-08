@@ -2,8 +2,10 @@ services:
   - type: web
     name: waist-measurement-app  # Unique name for your service
     env: python
-    buildCommand: pip install -r requirements.txt  # Install dependencies
-    startCommand: gunicorn app:app  # Start the Flask app with Gunicorn
+    buildCommand: |
+      pip install -r requirements.txt
+      flask db upgrade  # Apply database migrations if using Flask-Migrate
+    startCommand: gunicorn main:app  # Start the Flask app with Gunicorn
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -13,7 +15,8 @@ services:
         generateValue: true  # Generate a secure secret key for Flask
       - key: LANGUAGES
         value: "en,tr"  # Supported languages for Flask-Babel
-
+      - key: BABEL_DEFAULT_LOCALE
+        value: "en"  # Default language for Flask-Babel
 databases:
   - name: waist-db  # Database service name
     databaseName: waist_db  # Database name
