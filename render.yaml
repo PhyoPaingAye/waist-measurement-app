@@ -21,3 +21,11 @@ databases:
   - name: waist-db  # Database service name
     databaseName: waist_db  # Database name
     user: admin  # Default user
+    services:
+  - type: web
+    name: waist-measurement-app
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python init_db.py  # Initialize the database schema
+    startCommand: gunicorn main:app
